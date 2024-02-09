@@ -126,7 +126,7 @@ def calculate_max_pixels_per_page(image_width, image_height, num_pages_width, nu
     return max_pixels_width, max_pixels_height
 
 def main():
-    st.title("Image Dithering App")
+    st.title("Image Dithering App To Convert Push Pin Art")
     
     st.sidebar.header("Options")
     total_pixels = st.sidebar.text_input("Total Pins:", "")
