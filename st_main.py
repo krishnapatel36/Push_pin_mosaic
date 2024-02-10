@@ -126,6 +126,7 @@ def calculate_max_pixels_per_page(image_width, image_height, num_pages_width, nu
     return max_pixels_width, max_pixels_height
 
 def main():
+    st.bata_set_page_config(page_title="push pin art")
     st.title("Image Dithering App To Convert Push Pin Art")
     
     st.sidebar.header("CENTER FOR CREATIVE LEARNING")
