@@ -4,6 +4,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import os
 import base64
+st.bata_set_page_config(page_title="push pin art")
 
 def floyd_steinberg_dithering(image, color_mapping):
     image = image.convert("RGB")
@@ -126,7 +127,6 @@ def calculate_max_pixels_per_page(image_width, image_height, num_pages_width, nu
     return max_pixels_width, max_pixels_height
 
 def main():
-    st.bata_set_page_config(page_title="push pin art")
     st.title("Image Dithering App To Convert Push Pin Art")
     
     st.sidebar.header("CENTER FOR CREATIVE LEARNING")
