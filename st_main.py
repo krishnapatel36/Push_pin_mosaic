@@ -4,7 +4,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import os
 import base64
-st.bata_set_page_config(page_title="push pin art")
+st.beta_set_page_config(page_title="push pin art")
 
 def floyd_steinberg_dithering(image, color_mapping):
     image = image.convert("RGB")
