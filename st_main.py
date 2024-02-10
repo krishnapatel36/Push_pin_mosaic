@@ -4,7 +4,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import os
 import base64
-st.beta_set_page_config(page_title='Hello World')
+st.set_page_config(page_title='Hello World')
 def floyd_steinberg_dithering(image, color_mapping):
     image = image.convert("RGB")
     width, height = image.size
