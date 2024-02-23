@@ -5,6 +5,7 @@ from reportlab.pdfgen import canvas
 import os
 import base64
 st.set_page_config(page_title='Push Pin Art')
+color_counts = {}
 def floyd_steinberg_dithering(image, color_mapping):
     image = image.convert("RGB")
     width, height = image.size
@@ -77,6 +78,7 @@ def download_link(object_to_download, download_filename, download_link_text):
         return f'<a href="data:application/octet-stream;base64,{b64}" download="{download_filename}">{download_link_text}</a>'
 
 def divide_push_pin_art_into_a3_pages_and_convert_to_pdf(push_pin_art_image, user_colors=None):
+    global color_counts
     push_pin_art_width, push_pin_art_height = push_pin_art_image.size
 
     num_pages_width, num_pages_height = calculate_a3_pages(push_pin_art_width, push_pin_art_height)
