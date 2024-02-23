@@ -1,8 +1,10 @@
+
 import streamlit as st
 from PIL import Image, ImageDraw
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import os
+import string
 import base64
 st.set_page_config(page_title='Push Pin Art')
 def floyd_steinberg_dithering(image, color_mapping):
@@ -42,7 +44,7 @@ def hex_to_rgb(hex_color):
 def rgb_to_hex(rgb):
     return f"{rgb[0]:02X}{rgb[1]:02X}{rgb[2]:02X}"
 
-def convert_image_to_pdf_with_grid(image, pdf, pdf_size, margin=0, grid_color="black", user_colors=None):
+def convert_image_to_pdf_with_grid(image, pdf, pdf_size, margin=0, grid_color="black", user_colors=None, page_label=None):
     img_width, img_height = image.size
 
     scale_factor_width = (pdf_size[0] - 2 * margin) / img_width
@@ -71,6 +73,13 @@ def convert_image_to_pdf_with_grid(image, pdf, pdf_size, margin=0, grid_color="b
         y = y_position + j * cell_size_y
         pdf.line(x_position, y, x_position + scaled_width, y)
 
+    # Adding page label on the right side
+    if page_label:
+        pdf.drawString(x_position + scaled_width + 5, y_position + scaled_height / 2, page_label)
+
+
+
+
 def download_link(object_to_download, download_filename, download_link_text):
     if isinstance(object_to_download, bytes):
         b64 = base64.b64encode(object_to_download).decode()
@@ -86,6 +95,8 @@ def divide_push_pin_art_into_a3_pages_and_convert_to_pdf(push_pin_art_image, use
 
     max_pixels_per_page = calculate_max_pixels_per_page(push_pin_art_width, push_pin_art_height, num_pages_width, num_pages_height)
 
+    alphabet = string.ascii_uppercase
+
     for page_row in range(num_pages_height):
         for page_col in range(num_pages_width):
             start_col = page_col * max_pixels_per_page[0]
@@ -97,12 +108,14 @@ def divide_push_pin_art_into_a3_pages_and_convert_to_pdf(push_pin_art_image, use
 
             total_pixels = page_image.width * page_image.height
 
-            # st.write(f"Page {page_row * num_pages_width + page_col + 1}:")
+            page_label = f"{alphabet[page_row]}{page_col + 1}"
+
+            # st.write(f"Page {page_label}:")
             # st.write(f" - Width: {page_image.width}")
             # st.write(f" - Height: {page_image.height}")
             # st.write(f" - Total Pixels: {total_pixels}")
 
-            convert_image_to_pdf_with_grid(page_image, pdf, pdf_size=(letter[0], letter[1]), margin=10, grid_color="black", user_colors=user_colors)
+            convert_image_to_pdf_with_grid(page_image, pdf, pdf_size=(letter[0], letter[1]), margin=10, grid_color="black", user_colors=user_colors, page_label=page_label)
 
     pdf.save()
 
@@ -167,6 +180,15 @@ def main():
         st.subheader("Dithered Image")
         st.image(dithered_image, caption="Dithered Image", use_column_width=True)
 
+        # Count pixels for each color in the dithered image
+        color_counts = dithered_image.getcolors()
+
+        # Print total pixel count for each color
+        st.subheader("Color Counts in Dithered Image")
+        for count, color in color_counts:
+            hex_color = rgb_to_hex(color)
+            st.write(f"Color {hex_color}: {count} pixels")
+
         # Save the output image
         output_path_image = os.path.join(os.getcwd(), "output_image.png")
         dithered_image.save(output_path_image)
@@ -179,6 +201,7 @@ def main():
         
         pdf_output_path = os.path.join(os.getcwd(), "output.pdf")
         st.markdown(download_link(open(pdf_output_path, 'rb').read(), "output.pdf", "Download Output PDF"), unsafe_allow_html=True)
+
 
 if __name__ == "__main__":
     main()
