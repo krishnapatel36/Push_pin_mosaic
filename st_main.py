@@ -5,7 +5,6 @@ from reportlab.pdfgen import canvas
 import os
 import base64
 st.set_page_config(page_title='Push Pin Art')
-color_counts = {}
 def floyd_steinberg_dithering(image, color_mapping):
     image = image.convert("RGB")
     width, height = image.size
@@ -78,7 +77,6 @@ def download_link(object_to_download, download_filename, download_link_text):
         return f'<a href="data:application/octet-stream;base64,{b64}" download="{download_filename}">{download_link_text}</a>'
 
 def divide_push_pin_art_into_a3_pages_and_convert_to_pdf(push_pin_art_image, user_colors=None):
-    global color_counts
     push_pin_art_width, push_pin_art_height = push_pin_art_image.size
 
     num_pages_width, num_pages_height = calculate_a3_pages(push_pin_art_width, push_pin_art_height)
@@ -87,8 +85,6 @@ def divide_push_pin_art_into_a3_pages_and_convert_to_pdf(push_pin_art_image, use
     pdf = canvas.Canvas(pdf_output_path, pagesize=letter)
 
     max_pixels_per_page = calculate_max_pixels_per_page(push_pin_art_width, push_pin_art_height, num_pages_width, num_pages_height)
-
-    color_counts = {rgb_to_hex(color): 0 for color in user_colors}
 
     for page_row in range(num_pages_height):
         for page_col in range(num_pages_width):
@@ -101,24 +97,14 @@ def divide_push_pin_art_into_a3_pages_and_convert_to_pdf(push_pin_art_image, use
 
             total_pixels = page_image.width * page_image.height
 
-            for y in range(page_image.height):
-                for x in range(page_image.width):
-                    pixel_color = page_image.getpixel((x, y))
-                    closest_color = find_closest_color(pixel_color, user_colors)
-                    color_counts[rgb_to_hex(closest_color)] += 1
+            # st.write(f"Page {page_row * num_pages_width + page_col + 1}:")
+            # st.write(f" - Width: {page_image.width}")
+            # st.write(f" - Height: {page_image.height}")
+            # st.write(f" - Total Pixels: {total_pixels}")
 
             convert_image_to_pdf_with_grid(page_image, pdf, pdf_size=(letter[0], letter[1]), margin=10, grid_color="black", user_colors=user_colors)
 
     pdf.save()
-
-    # Print color counts
-    st.subheader("Total Count of Each Color Push Pin Needed:")
-    for color_hex, count in color_counts.items():
-        st.write(f"Color {color_hex}: {count} push pins")
-
-# Add the following line at the end of the main() function to display the total count of each color push pin needed
-st.write(f"Total Count of Each Color Push Pin Needed: {color_counts}")
-
 
 def calculate_a3_pages(image_width, image_height):
     a3_width_cm = 29.7
