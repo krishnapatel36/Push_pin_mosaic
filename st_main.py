@@ -112,10 +112,10 @@ def divide_push_pin_art_into_a3_pages_and_convert_to_pdf(push_pin_art_image, use
 
             page_label = f"{alphabet[page_row]}{page_col + 1}"
 
-            st.write(f"Page {page_label}:")
-            st.write(f" - Width: {page_image.width}")
-            st.write(f" - Height: {page_image.height}")
-            st.write(f" - Total Pixels: {total_pixels}")
+            # st.write(f"Page {page_label}:")
+            # st.write(f" - Width: {page_image.width}")
+            # st.write(f" - Height: {page_image.height}")
+            # st.write(f" - Total Pixels: {total_pixels}")
 
             convert_image_to_pdf_with_grid(page_image, pdf, pdf_size=(letter[0], letter[1]), margin=10, grid_color="black", user_colors=user_colors, page_label=page_label)
 
